@@ -142,15 +142,4 @@ const login = () => {
   .shake {
     animation: shake 0.4s ease-in-out;
   }
-
-  .slide-fade-enter-from, /* start enter */
-  .slide-fade-leave-to {  /* end leave */
-    transform: translateY(40px);
-    opacity: 0;
-  }
-  
-  .slide-fade-enter-active,
-  .slide-fade-leave-active {
-    transition: all 0.6s ease-out;
-  }
 </style>
