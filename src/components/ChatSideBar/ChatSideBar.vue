@@ -18,6 +18,11 @@
     <button @click="prepareNewChat" class="new-chat">
       ✚ {{ toggleVisibility ? 'New Chat' : '' }}
     </button>
+    <div class="!mt-auto flex w-full justify-between items-center" v-if="toggleVisibility">
+      <button v-if="authStore.isAuthenticated" @click="logout" class="logout-btn">
+        Logout
+      </button>
+    </div>
   </div>
   <div class="chat-overlay" :class="{ 'chat-overlay--active': toggleVisibility }" @click="toggleVisibility = false">
   </div>
@@ -32,13 +37,11 @@ import { useRoute, useRouter } from 'vue-router';
 
 import ToggleButton from '@/components/ToggleButton/ToggleButton.vue';
 
-// Define the Chat type
 interface Chat {
   id: string;
   name: string;
 }
 
-// Define props with the correct type
 const props = defineProps<{ chats: Chat[]; isNewChat: boolean }>();
 
 const chatStore = useChatStore();
@@ -86,6 +89,11 @@ function prepareNewChat() {
   chatStore.switchChat(null);
   router.push({ name: 'ChatView', params: { chatName: 'new-chat' } });
 }
+
+const logout = () => {
+  authStore.logout();
+  router.push('/');
+};
 </script>
 
 <style scoped lang="scss">
@@ -196,4 +204,21 @@ function prepareNewChat() {
   font-size: 16px;
 }
 
+.logout-btn {
+  margin-top: auto;
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.logout-btn:hover {
+  background: #c9302c;
+}
 </style>

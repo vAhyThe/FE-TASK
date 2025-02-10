@@ -44,18 +44,13 @@ function splitWords(answer: string): string[] {
   return answer.split(' ');
 }
 
-/**
- * When the animation of the last word ends, remove the animated state so
- * that the answer is rendered as one plain sentence.
- */
+
 function handleAnimationEnd(messageId: number, wordIndex: number, totalWords: number) {
-  // Only when the last word's animation ends, clear the animation flag.
   if (wordIndex === totalWords - 1 && lastAnimatedMessageId.value === messageId) {
     lastAnimatedMessageId.value = null;
   }
 }
 
-// Watch for changes in messages and mark the last one as animated.
 watch(
   () => props.messages,
   (newMessages) => {

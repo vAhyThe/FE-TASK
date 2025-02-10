@@ -38,8 +38,6 @@ import { createSlug } from '@/utils/utils';
 import response from '@/mocks/response';
 import ChatSideBar from '@/components/ChatSideBar/ChatSideBar.vue';
 import ChatBlock from '@/components/ChatBlock/ChatBlock.vue';
-import ToggleButton from '@/components/ToggleButton/ToggleButton.vue';
-import ThemeSwitcher from '@/components/ThemeSwitcher/ThemeSwitcher.vue';
 
 const chatStore = useChatStore();
 const userMessage = ref<string>('');
@@ -65,10 +63,8 @@ function scrollToBottom() {
 }
 
 async function sendMessage() {
-  // Pokud je zpráva prázdná nebo je input momentálně zakázán, neprovádíme nic
   if (userMessage.value.trim() === '' || isInputDisabled.value) return;
 
-  // Deaktivace inputu – uživatel nemůže posílat další zprávy, dokud se neobjeví odpověď
   isInputDisabled.value = true;
 
   const userMsg = userMessage.value;
@@ -80,7 +76,6 @@ async function sendMessage() {
     updateChatUrl(userMsg);
   }
 
-  // Přidání zprávy bez odpovědi
   chatStore.addMessage({
     id: Date.now(),
     question: userMsg,
@@ -92,7 +87,6 @@ async function sendMessage() {
 
   await nextTick();
 
-  // Simulace načítání odpovědi (např. volání API)
   setTimeout(() => {
     const lastMessage = chatStore.messages.at(-1);
     if (lastMessage) {
@@ -100,7 +94,6 @@ async function sendMessage() {
       chatStore.saveChatsToStorage();
       scrollToBottom();
     }
-    // Po načtení odpovědi opět povolíme vstup
     isInputDisabled.value = false;
   }, 1000);
 }
