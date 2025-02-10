@@ -19,6 +19,7 @@
       ✚ {{ toggleVisibility ? 'New Chat' : '' }}
     </button>
     <div class="!mt-auto flex w-full justify-between items-center" v-if="toggleVisibility">
+      <ThemeSwitcher />
       <button v-if="authStore.isAuthenticated" @click="logout" class="logout-btn">
         Logout
       </button>
@@ -36,6 +37,7 @@ import { createSlug } from '@/utils/utils';
 import { useRoute, useRouter } from 'vue-router';
 
 import ToggleButton from '@/components/ToggleButton/ToggleButton.vue';
+import ThemeSwitcher from '@/components/ThemeSwitcher/ThemeSwitcher.vue';
 
 interface Chat {
   id: string;
