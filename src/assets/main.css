@@ -1,5 +1,6 @@
 @import './base.css';
 @import "tailwindcss";
+@import './animations.css';
 
 #app {
   font-weight: normal;
