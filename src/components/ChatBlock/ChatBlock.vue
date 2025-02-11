@@ -1,15 +1,15 @@
 <template>
-  <div class="chat-history__content">
+  <div class="chat-block__container">
     <div v-for="(msg, index) in props.messages" :key="msg.id" class="chat-block">
-      <div class="myQuestion text-right">
+      <div class="chat-block__question text-right">
         {{ msg.question }}
       </div>
-      <div v-if="msg.answer" class="myAnswer text-left">
+      <div v-if="msg.answer" class="chat-block__answer text-left">
         <template v-if="isLastMessageAnimated(msg.id)">
           <span
             v-for="(word, wordIndex) in splitWords(msg.answer)"
             :key="wordIndex"
-            class="word"
+            class="chat-block__word"
             :style="{ animationDelay: wordIndex * 0.1 + 's' }"
             @animationend="handleAnimationEnd(msg.id, wordIndex, splitWords(msg.answer).length)"
           >
@@ -64,6 +64,14 @@ watch(
 </script>
 
 <style scoped lang="scss">
+.chat-block__container {
+  padding: 10px 0 100px;
+  width: 100%;
+  margin: 0 auto;
+  transition: all 0.25s ease;
+}
+
+
 .chat-block {
   margin: 10px 20px;
   border-bottom: 1px solid #ccc;
@@ -75,7 +83,7 @@ watch(
   }
 }
 
-.myQuestion {
+.chat-block__question {
   padding: 10px;
   border-radius: 5px;
   background-color: white;
@@ -83,15 +91,14 @@ watch(
   display: inline-block;
 }
 
-.myAnswer {
+.chat-block__answer {
   opacity: 1;
   letter-spacing: 0px;
   transform: translateY(0);
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Styles for individual words in the animation */
-.word {
+.chat-block__word {
   opacity: 0;
   display: inline-block;
   margin-right: 4.2px;

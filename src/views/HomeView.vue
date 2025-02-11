@@ -22,7 +22,6 @@ const router = useRouter();
 </script>
 
 <style scoped>
-/* BUTTON */
 button {
   background-color: #007bff;
   color: white;

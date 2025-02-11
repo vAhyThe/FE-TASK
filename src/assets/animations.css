@@ -20,6 +20,18 @@
   }
 }
 
+
+@keyframes slideFromBottomFixed {
+  0% {
+    bottom: -40px;
+    opacity: 0;
+  }
+  100% {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
 @keyframes shake {
   0% {
     transform: translateX(0);

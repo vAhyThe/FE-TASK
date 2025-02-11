@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils"
 import { describe, it, expect, vi } from "vitest"
 import { createTestingPinia } from "@pinia/testing"
-import { useThemeStore } from "@/stores/themeStore" // Use the actual theme store definition
+import { useThemeStore } from "@/stores/themeStore"
 import ThemeSwitch from "./ThemeSwitcher.vue"
 
 describe("ThemeSwitch Component", () => {
@@ -29,17 +29,13 @@ describe("ThemeSwitch Component", () => {
       },
     })
 
-    // Access the store instance created by Pinia
     const themeStore = useThemeStore()
 
-    // Initially, isDarkTheme should be false
     expect(themeStore.isDarkTheme).toBe(false)
 
-    // Trigger the checkbox change event
     const checkbox = wrapper.find("input[type='checkbox']")
     await checkbox.trigger("change")
 
-    // Verify that toggleTheme was called and the state was updated
     expect(themeStore.isDarkTheme).toBe(true)
   })
 })

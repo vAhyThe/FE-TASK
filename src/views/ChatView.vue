@@ -8,16 +8,7 @@
             <span>{{ activeChat?.name || 'New Chat (not yet created)' }}</span>
           </h4>
           <ChatBlock :messages="messages" />
-          <div class="chat-input" v-if="activeChat || isNewChat">
-            <input
-              type="text"
-              ref="chatInput"
-              v-model="userMessage"
-              :placeholder="!isInputDisabled ? 'Start asking for knowledge...' : 'Please wait for the response...'"
-              @keyup.enter="sendMessage"
-              :disabled="isInputDisabled"
-            />
-          </div>
+          <ChatInput v-if="activeChat || isNewChat" @send-message="sendMessage" :isInputDisabled="isInputDisabled" ref="chatInput" />
         </template>
 
         <template v-else>
@@ -38,11 +29,10 @@ import { createSlug } from '@/utils/utils';
 import response from '@/mocks/response';
 import ChatSideBar from '@/components/ChatSideBar/ChatSideBar.vue';
 import ChatBlock from '@/components/ChatBlock/ChatBlock.vue';
+import ChatInput from '@/components/ChatInput/ChatInput.vue';
 
 const chatStore = useChatStore();
-const userMessage = ref<string>('');
 const isNewChat = ref(false);
-// Reaktivní proměnná, která určuje, zda má být input deaktivován.
 const isInputDisabled = ref(false);
 
 const route = useRoute();
@@ -52,7 +42,8 @@ const chats = computed(() => chatStore.chats);
 const activeChat = computed(() => chatStore.activeChat);
 const messages = computed(() => chatStore.messages);
 const chatHistoryContentRef = ref<HTMLElement | null>(null);
-const chatInput = ref<HTMLInputElement | null>(null);
+  const chatInput = ref<InstanceType<typeof ChatInput> | null>(null);
+
 
 function scrollToBottom() {
   nextTick(() => {
@@ -62,27 +53,24 @@ function scrollToBottom() {
   });
 }
 
-async function sendMessage() {
-  if (userMessage.value.trim() === '' || isInputDisabled.value) return;
+async function sendMessage(message: string) {
+  if (message.trim() === '' || isInputDisabled.value) return;
 
   isInputDisabled.value = true;
 
-  const userMsg = userMessage.value;
-
   if (isNewChat.value) {
-    const newChatId = chatStore.createNewChat(userMsg);
+    const newChatId = chatStore.createNewChat(message);
     chatStore.switchChat(newChatId);
     isNewChat.value = false;
-    updateChatUrl(userMsg);
+    updateChatUrl(message);
   }
 
   chatStore.addMessage({
     id: Date.now(),
-    question: userMsg,
+    question: message,
     answer: '',
   });
 
-  userMessage.value = '';
   scrollToBottom();
 
   await nextTick();
@@ -97,16 +85,6 @@ async function sendMessage() {
     isInputDisabled.value = false;
   }, 1000);
 }
-
-watch(isNewChat, (newVal) => {
-  if (newVal) {
-    nextTick(() => {
-      if (chatInput.value) {
-        chatInput.value.focus();
-      }
-    });
-  }
-});
 
 function updateChatUrl(chatName: string) {
   const slug = chatName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
@@ -135,6 +113,7 @@ onMounted(() => {
 
 watch(() => route.params.chatName, (newChatName) => {
   if (newChatName) {
+    chatInput.value?.focusInput();
     const chat = chats.value.find(chat => createSlug(chat.name) === newChatName);
     if (chat) {
       chatStore.switchChat(chat.id);
@@ -208,70 +187,5 @@ watch(() => route.params.chatName, (newChatName) => {
   padding: 10px 0;
   height: 100vh;
   overflow-y: auto;
-}
-
-.chat-input {
-  padding: 10px;
-  position: fixed;
-  left: 110px;
-  bottom: 20px;
-  width: calc(100% - 120px);
-  display: flex;
-  background: white;
-  border-radius: 1rem;
-  background: linear-gradient(173deg, #23272f 0%, #14161a 100%);
-  box-shadow:
-    10px 10px 20px #0e1013,
-    -10px -10px 40px #383e4b;
-  padding: 0.3rem;
-  gap: 0.3rem;
-  animation: slideFromBottom .5s ease-out forwards;
-
-  @media (min-width: 1024px) {
-    left: 5%;
-    width: 90%;
-    position: fixed;
-    width: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  input {
-    width: 100%;
-    border-radius: 0.8rem;
-    background: #23272f;
-    box-shadow:
-      inset 5px 5px 10px #0e1013,
-      inset -5px -5px 10px #383e4b,
-      0px 0px 100px rgba(255, 212, 59, 0),
-      0px 0px 100px rgba(255, 102, 0, 0);
-    flex-basis: 100%;
-    padding: 1rem;
-    border: none;
-    border: 1px solid transparent;
-    color: white;
-    transition: all 0.2s ease-in-out;
-
-    &:focus {
-      border: 1px solid #007bff;
-      outline: none;
-      box-shadow:
-        inset 0px 0px 10px rgba(0, 123, 255, 0.5),
-        inset 0px 0px 10px rgba(0, 123, 255, 0.5),
-        0px 0px 100px rgba(0, 123, 255, 0.5),
-        0px 0px 100px rgba(0, 123, 255, 0.5);
-    }
-  }
-}
-
-@keyframes slideFromBottom {
-  0% {
-    bottom: -40px;
-    opacity: 0;
-  }
-  100% {
-    bottom: 30px;
-    opacity: 1;
-  }
 }
 </style>

@@ -1,18 +1,16 @@
 import { mount } from "@vue/test-utils"
-import { nextTick, computed } from "vue"
+import { nextTick } from "vue"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { createTestingPinia } from "@pinia/testing"
 import ChatSideBar from "./ChatSideBar.vue"
 import { useAuthStore } from "@/stores/authStore"
 import { createRouter, createMemoryHistory } from "vue-router"
 
-// Partially mock `vue-router`
 vi.mock("vue-router", async () => {
   const actual = await vi.importActual<any>("vue-router")
   return { ...actual }
 })
 
-// Define mock routes and router
 const routes = [
   {
     path: "/chat/:chatName",
@@ -43,7 +41,7 @@ describe("ChatSideBar Component", () => {
       },
     })
 
-    const chatItems = wrapper.findAll(".chat-item")
+    const chatItems = wrapper.findAll(".chat-sidebar__item")
     expect(chatItems.length).toBe(2)
     expect(chatItems[0].text()).toContain("Chat 1")
     expect(chatItems[1].text()).toContain("Name 2")
@@ -63,7 +61,7 @@ describe("ChatSideBar Component", () => {
 
     await nextTick()
 
-    const logoutButton = wrapper.find(".logout-btn")
+    const logoutButton = wrapper.find(".chat-sidebar__logout")
     expect(logoutButton.exists()).toBe(true)
 
     await logoutButton.trigger("click")
