@@ -35,7 +35,7 @@ import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useChatStore } from '@/stores/chatStore';
 import { createSlug } from '@/utils/utils';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import ToggleButton from '@/components/ToggleButton/ToggleButton.vue';
 import ThemeSwitcher from '@/components/ThemeSwitcher/ThemeSwitcher.vue';
@@ -49,11 +49,9 @@ const props = defineProps<{ chats: Chat[]; isNewChat: boolean }>();
 
 const chatStore = useChatStore();
 const authStore = useAuthStore();
-const route = useRoute();
 const router = useRouter();
 const toggleVisibility = ref<boolean>(true);
 const activeChat = computed(() => chatStore.activeChat);
-const lastAnimatedMessageId = ref<number | null>(null);
 const emit = defineEmits(['update:isNewChat']);
 
 authStore.initializeAuth();
